@@ -23,7 +23,7 @@ const FoodSchema = new mongoose.Schema(
     description: {
       type: String,
     },
-    ingridients: {
+    ingredients: {
       type: [String],
     },
     mealType: {
