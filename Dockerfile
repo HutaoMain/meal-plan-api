@@ -4,10 +4,10 @@ FROM node:18.17.0-alpine
 WORKDIR /app
 
 # Copy and download dependencies
-COPY package.json yarn.lock ./
+COPY package.json package-lock.json ./
 
 # Install files
-RUN yarn --frozen-lockfile
+RUN npm install
 
 # Copy the source files into the image
 COPY . .
@@ -15,4 +15,4 @@ COPY . .
 # Expose API PORT
 EXPOSE 4000
 
-CMD yarn start
+CMD npm start
