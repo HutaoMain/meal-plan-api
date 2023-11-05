@@ -23,7 +23,7 @@ const connect = async () => {
 
 app.use("/api/food", FoodRoute);
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   connect();
   console.log(`server is listening to port ${PORT}`);
