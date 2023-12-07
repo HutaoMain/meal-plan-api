@@ -20,9 +20,15 @@ const getFoodById = async (req, res) => {
 };
 
 const getFoodList = async (req, res, next) => {
+  const page = parseInt(req.query.page) || 1;
+  const perPage = 5;
+
   try {
-    const food = await Food.find();
-    res.status(200).json(food);
+    const skip = (page - 1) * perPage;
+
+    const food = await Food.find().skip(skip).limit(perPage);
+
+    res.status(200).json({ food });
   } catch (err) {
     next(err);
   }
@@ -50,10 +56,57 @@ const deleteFoodById = async (req, res) => {
   }
 };
 
+const searchByIngredient = async (req, res, next) => {
+  const page = parseInt(req.query.page) || 1;
+  const perPage = 5;
+  const skip = (page - 1) * perPage;
+  try {
+    const ingredientName = req.params.ingredientName;
+
+    const foods = await Food.find({
+      ingredients: { $regex: new RegExp(ingredientName, "i") },
+    })
+      .skip(skip)
+      .limit(perPage);
+
+    res.status(200).json({ foods });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const searchByBMIRange = async (req, res, next) => {
+  const page = parseInt(req.query.page) || 1;
+  const perPage = 5;
+  const skip = (page - 1) * perPage;
+
+  try {
+    const minBMI = parseFloat(req.params.min);
+    const maxBMI = parseFloat(req.params.max);
+
+    if (isNaN(minBMI) || isNaN(maxBMI)) {
+      return res.status(400).json({ error: "Invalid BMI values" });
+    }
+
+    const foods = await Food.find({
+      "bmiRange.min": { $lte: maxBMI },
+      "bmiRange.max": { $gte: minBMI },
+    })
+      .skip(skip)
+      .limit(perPage);
+
+    res.status(200).json({ foods });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   createFood,
   getFoodById,
   getFoodList,
   updateFoodById,
   deleteFoodById,
+  searchByIngredient,
+  searchByBMIRange,
 };

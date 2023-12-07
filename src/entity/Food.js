@@ -29,6 +29,9 @@ const FoodSchema = new mongoose.Schema(
     mealType: {
       type: String,
     },
+    allergies: {
+      type: [String],
+    },
     bmiRange: BmiRangeSchema,
   },
   {
